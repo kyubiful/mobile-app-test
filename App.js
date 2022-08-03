@@ -1,16 +1,16 @@
 import { StatusBar } from 'expo-status-bar'
-import { TabNavigator } from '@/navigations/TabNavigator'
 import { NavigationContainer } from '@react-navigation/native'
-import { Login } from '@/screens/public/Login'
-import { useState } from 'react'
+import { EntryPoint } from '@/screens/public/EntryPoint'
+import { Provider } from 'react-redux'
+import { store } from '@/redux/store'
 
 export default function App() {
-  const [ user, setUser ] = useState()
-
   return (
-      <NavigationContainer>
-        { user ? <TabNavigator /> : <Login setUser={setUser} />}
+    <NavigationContainer>
+      <Provider store={store}>
+        <EntryPoint /> 
         <StatusBar style="auto" />
-      </NavigationContainer>
+      </Provider>
+    </NavigationContainer>
   )
 }
