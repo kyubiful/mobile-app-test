@@ -4,13 +4,17 @@ import { FormInput, FormInputError, FormContainer, FormButton } from '@/componen
 import { object, string } from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { ScreenContainer } from '@/components/Screen/ScreenContainer.jsx'
+import { login } from '@/redux/reducers/user'
+import { useDispatch } from 'react-redux'
 
 let loginSchema = object().shape({
 	email: string().required().email(),
 	password: string().min(8).required()
 })
 
-export const Login = ({ setUser }) => {
+export const Login = () => {
+
+	const dispatch = useDispatch()
 
 	const form = useForm({ resolver: yupResolver(loginSchema)})
 
@@ -27,7 +31,8 @@ export const Login = ({ setUser }) => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				setUser(data.token)
+				console.log(data)
+				dispatch(login(data))
 			})
 			.catch(err => console.log(err))
 
