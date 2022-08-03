@@ -1,15 +1,16 @@
-import { Text, View, Alert, StyleSheet } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 import { useForm, FormProvider } from 'react-hook-form'
-import { FormInput, FormInputError, FormContainer, FormButton } from '../components/Form'
+import { FormInput, FormInputError, FormContainer, FormButton } from '@/components/Form'
 import { object, string } from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import { ScreenContainer } from '@/components/Screen/ScreenContainer.jsx'
 
 let loginSchema = object().shape({
 	email: string().required().email(),
 	password: string().min(8).required()
 })
 
-export const Login = () => {
+export const Login = ({ setUser }) => {
 
 	const form = useForm({ resolver: yupResolver(loginSchema)})
 
@@ -26,14 +27,14 @@ export const Login = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				Alert.alert('Msg', JSON.stringify(data))
+				setUser(data.token)
 			})
 			.catch(err => console.log(err))
 
 	}
 
 	return (
-		<View style={styles.view}>
+		<ScreenContainer>
 			<Text style={styles.title}>Login</Text>
 			<FormProvider {...form} >
 				<FormContainer>
@@ -46,16 +47,11 @@ export const Login = () => {
 					<FormButton title="Submit" onPress={handleSubmit(onSubmit)} />
 				</FormContainer>
 			</FormProvider>
-		</View>
+		</ScreenContainer>
 	)
 }
 
 const styles = StyleSheet.create({
-	
-	view: {
-		alignItems: 'center',
-		justifyContent: 'center'
-	},
 	title: {
 		fontSize: 20
 	}
