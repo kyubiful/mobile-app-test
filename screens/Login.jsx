@@ -1,18 +1,19 @@
 import { Text, View, Alert, StyleSheet } from 'react-native'
-import { useForm } from 'react-hook-form'
-import { FormInput, FormInputError, FormContainer, FormButton, regex } from '../components/Form'
-import { useEffect, useState } from 'react'
+import { useForm, FormProvider } from 'react-hook-form'
+import { FormInput, FormInputError, FormContainer, FormButton } from '../components/Form'
+import { object, string } from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+
+let loginSchema = object().shape({
+	email: string().required().email(),
+	password: string().min(8).required()
+})
 
 export const Login = () => {
 
-	const [user, setUser] = useState()
+	const form = useForm({ resolver: yupResolver(loginSchema)})
 
-	const { control, handleSubmit, formState: { errors } } = useForm({
-		defaultValues: {
-			email: '',
-			password: ''
-		}
-	})
+	const { control, handleSubmit, formState: { errors } } = form
 
 	const onSubmit = data => {
 
@@ -25,7 +26,6 @@ export const Login = () => {
 		})
 			.then(res => res.json())
 			.then(data => {
-				console.log(data)
 				Alert.alert('Msg', JSON.stringify(data))
 			})
 			.catch(err => console.log(err))
@@ -35,15 +35,17 @@ export const Login = () => {
 	return (
 		<View style={styles.view}>
 			<Text style={styles.title}>Login</Text>
-			<FormContainer>
-				<FormInput control={control} placeholder="Email" name="email" pattern={regex.email} />
-				<FormInputError error={errors.email} message="Email is required." />	
+			<FormProvider {...form} >
+				<FormContainer>
+					<FormInput control={control} placeholder="Email" name="email" />
+					<FormInputError error={errors.email}/>	
 
-				<FormInput control={control} secure={true} placeholder="Password" name="password" />
-				<FormInputError error={errors.password} message="Password is required." />	
+					<FormInput control={control} secure={true} placeholder="Password" name="password" />
+					<FormInputError error={errors.password}/>	
 
-				<FormButton title="Submit" onPress={handleSubmit(onSubmit)} />
-			</FormContainer>
+					<FormButton title="Submit" onPress={handleSubmit(onSubmit)} />
+				</FormContainer>
+			</FormProvider>
 		</View>
 	)
 }

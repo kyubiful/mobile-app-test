@@ -1,21 +1,13 @@
 import { StyleSheet, TextInput } from 'react-native'
-import { Controller } from 'react-hook-form'
+import { Controller, useFormContext } from 'react-hook-form'
 
-export const FormInput = ({ control, placeholder, name, secure=false, pattern=""}) => {
+export const FormInput = ({ placeholder, name, secure=false }) => {
+
+	const { control } =  useFormContext()
 
 	return (
 			<Controller
 				control={control}
-				rules={{
-					required: {
-						value: true,
-						message: 'Field is required'
-					},
-					pattern: {
-						value: pattern,
-						message: 'It`s not a valid email'
-					}
-				}}
 				render={({ field: { onChange, onBlur, value }}) => (
 					<TextInput
 						style={styles.input}
